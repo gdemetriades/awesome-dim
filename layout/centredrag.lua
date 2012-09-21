@@ -19,30 +19,82 @@ module("dim.layout.centredrag")
 
 name = "centredrag"
 
-top_left = 0
-top_right = 1
-bottom_left = 2
-bottom_right = 3
-
 function arrange(p)
-
-    -- A useless gap (like the dwm patch) can be defined with
-    -- beautiful.useless_gap_width .
-    local useless_gap = tonumber(beautiful.useless_gap_width)
-    if useless_gap == nil
-    then
-        useless_gap = 0
-    end
 
     -- Screen.
     local wa = p.workarea
     local cls = p.clients
 
     -- Width of main column?
-    local t = awful.tag.selected(p.screen)
-    local mwfact = awful.tag.getmwfact(t)
+    --local t = awful.tag.selected(p.screen)
+    --local mwfact = awful.tag.getmwfact(t)
+    
+    if #cls == 1
+    then
+        local g = {}
+        g.height = wa.height
+        g.width = wa.width
+        g.x = wa.x
+        g.y = wa.y
+        
+        cls[1]:geometry(g)
+    elseif #cls == 2
+    then
+        local g = {}
+        g.height = wa.height
+        g.width = 3*wa.width/4
+        g.x = wa.x
+        g.y = wa.y
+        
+        cls[1]:geometry(g)
 
-    if #cls > 0
+        local h = {}
+        h.height = wa.height
+        h.width = wa.width/4
+        h.x = wa.x + g.width
+        h.y = wa.y
+
+        cls[2]:geometry(h)
+    elseif #cls > 2
+    then
+        local g = {}
+        g.height = wa.height
+        g.width = wa.width/2
+        g.x = wa.x + wa.width/4
+        g.y = wa.y
+        
+        cls[1]:geometry(g)
+        
+        local Lheight = wa.height / (math.floor((#cls - 1)/2))
+        local Rheight = wa.height / (math.floor(#cls/2))
+
+        for i=2, #cls
+        do
+            local c = cls[i]
+            local g = {}
+            
+            if i%2 == 0
+            then
+                g.height = Rheight
+                g.width = wa.width/4
+                g.x = wa.x + 3*wa.width/4
+                g.y = wa.y + (i-2)*Rheight/2
+            elseif i%2 == 1
+            then
+                g.height = Lheight
+                g.width = wa.width/4
+                g.x = wa.x
+                g.y = wa.y + (i-3)*Lheight/2
+            end
+
+            c:geometry(g)
+        end
+        
+    end
+     
+    
+
+--[[    if #cls > 0
     then
         -- Main column, fixed width and height.
         local c = cls[#cls]
@@ -121,6 +173,5 @@ function arrange(p)
             end
         end
     end
+    --]]
 end
-
--- vim: set et :
