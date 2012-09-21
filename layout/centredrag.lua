@@ -1,3 +1,14 @@
+----------------------------------------------------------
+--
+--  Centredrag
+--
+--      Note: for now, this is a modified copy of
+--      centerwork for awesome-vain, found at
+--      https://github.com/vain/awesome-vain
+--
+----------------------------------------------------------
+
+
 -- Grab environment.
 local tonumber = tonumber
 local beautiful = beautiful
